@@ -1,0 +1,44 @@
+/* Tùy chỉnh thanh cuộn (Scrollbar) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+.dark ::-webkit-scrollbar-track {
+    background: #2d3748; 
+}
+::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
+/* Hiệu ứng mượt mà cho code block */
+pre {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* Checkbox tùy chỉnh */
+.custom-checkbox input:checked + div {
+    background-color: #10b981;
+    border-color: #10b981;
+}
+.custom-checkbox input:checked + div svg {
+    display: block;
+}
+
+/* Animation cho active link ở mục lục */
+.toc-link.active {
+    color: #10b981; /* Green-500 */
+    border-left: 3px solid #10b981;
+    padding-left: 0.75rem;
+    background-color: rgba(16, 185, 129, 0.1);
+}
+.toc-link {
+    transition: all 0.2s ease-in-out;
+    border-left: 3px solid transparent;
+}

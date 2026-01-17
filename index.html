@@ -1,191 +1,280 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hướng dẫn Cài đặt Code::Blocks (v25.03)</title>
+    <title>Hướng dẫn Cài đặt Code::Blocks (v25.03) - Phiên bản Nâng cấp</title>
+    
+    <!-- Tailwind CSS (Framework CSS) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Sử dụng font Inter -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
-    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4ade80', // Green-400
+                        darkBg: '#111827', // Gray-900
+                        darkCard: '#1f2937', // Gray-800
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Google -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <!-- Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Liên kết đến file CSS riêng -->
+    <link rel="stylesheet" href="./css/main.css">
 </head>
 
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-50 text-gray-800 font-sans transition-colors duration-300 dark:bg-darkBg dark:text-gray-200">
 
-    <div class="container mx-auto max-w-3xl px-4 py-10">
+    <!-- Thanh tiến trình đọc -->
+    <div class="fixed top-0 left-0 h-1 bg-green-500 z-50 transition-all duration-300" id="progressBar" style="width: 0%"></div>
 
-        <!-- Phần Tiêu đề -->
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Hướng dẫn Cài đặt Code::Blocks</h1>
-            <p class="text-xl text-gray-600">Phiên bản 25.03 (Bản chuẩn có Mingw)</p>
-        </header>
+    <!-- Header / Navbar -->
+    <nav class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200 dark:bg-darkCard/80 dark:border-gray-700 shadow-sm">
+        <div class="container mx-auto px-4 h-16 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-code text-green-600 text-2xl"></i>
+                <span class="font-bold text-xl tracking-tight">Code::Blocks <span class="text-green-600">Guide</span></span>
+            </div>
+            
+            <button id="themeToggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500">
+                <i class="fa-solid fa-moon text-gray-600 dark:text-yellow-300 text-xl" id="themeIcon"></i>
+            </button>
+        </div>
+    </nav>
 
-        <main class="bg-white p-6 md:p-10 rounded-xl shadow-lg">
+    <div class="container mx-auto max-w-6xl px-4 py-8 flex flex-col lg:flex-row gap-8">
 
-            <!-- Lời mở đầu -->
-            <p class="text-lg mb-6">Chào các bạn học sinh, để đảm bảo cả lớp chúng ta sử dụng chung một công cụ lập
-                trình C++ (gọi là IDE), chúng ta sẽ cùng nhau cài đặt <strong>Code::Blocks</strong>. Đây là một IDE miễn
-                phí, nhẹ nhàng và rất phù hợp cho người mới bắt đầu.</p>
+        <!-- Sidebar / Mục lục -->
+        <aside class="hidden lg:block w-1/4 relative">
+            <div class="sticky top-24 overflow-y-auto max-h-[80vh]">
+                <h3 class="font-bold text-gray-900 dark:text-white mb-4 uppercase text-sm tracking-wider">Mục lục</h3>
+                <nav class="flex flex-col space-y-2 text-sm text-gray-600 dark:text-gray-400" id="toc">
+                    <a href="#intro" class="toc-link p-2 hover:text-green-600 block rounded">Lời mở đầu</a>
+                    <a href="#download" class="toc-link p-2 hover:text-green-600 block rounded">1. Tải về (Quan trọng)</a>
+                    <a href="#install" class="toc-link p-2 hover:text-green-600 block rounded">2. Cài đặt</a>
+                    <a href="#setup" class="toc-link p-2 hover:text-green-600 block rounded">3. Thiết lập ban đầu</a>
+                    <a href="#hello-world" class="toc-link p-2 hover:text-green-600 block rounded">4. Code "Hello World"</a>
+                    <a href="#run" class="toc-link p-2 hover:text-green-600 block rounded">5. Chạy chương trình</a>
+                    <a href="#troubleshoot" class="toc-link p-2 hover:text-green-600 block rounded">Khắc phục lỗi</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Nội dung chính -->
+        <main class="w-full lg:w-3/4">
+
+            <!-- Hero Section -->
+            <header id="intro" class="text-center mb-12 py-10">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight">
+                    Cài đặt môi trường <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-emerald-700">C++</span>
+                </h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                    Hướng dẫn chi tiết cài đặt Code::Blocks phiên bản 25.03 kèm trình biên dịch MinGW.
+                </p>
+            </header>
 
             <!-- Phần 1: Tải về -->
-            <section>
-                <h2 class="text-3xl font-bold mb-6">Phần 1: Tải về (Bước quan trọng nhất!)</h2>
-                <p class="mb-4">Đây là bước dễ nhầm lẫn nhất. Các bạn phải tải đúng phiên bản có kèm theo "trình biên
-                    dịch" (compiler) - công cụ để dịch code của bạn sang ngôn ngữ máy tính.</p>
+            <section id="download" class="mb-16 scroll-mt-24">
+                <div class="bg-white dark:bg-darkCard rounded-2xl shadow-lg p-6 md:p-8 border-l-8 border-green-500">
+                    <h2 class="text-3xl font-bold mb-6 flex items-center gap-3 dark:text-white">
+                        <span class="bg-green-100 text-green-600 w-10 h-10 rounded-full flex items-center justify-center text-xl">1</span>
+                        Tải về (Quan trọng nhất)
+                    </h2>
+                    
+                    <p class="mb-4 text-gray-600 dark:text-gray-300">
+                        Hầu hết lỗi xảy ra do tải sai phiên bản. Bạn cần phiên bản có kèm <strong>Compiler (Trình biên dịch)</strong>.
+                    </p>
 
-                <!-- Cảnh báo quan trọng -->
-                <div class="alert-warning p-4 rounded-lg my-6">
-                    <h4 class="font-bold text-lg mb-2">Chú ý QUAN TRỌNG!</h4>
-                    <p>Phiên bản chúng ta cần tải là bản <strong>25.03</strong> VÀ có chữ <code>mingw</code> trong tên
-                        file. Tên chính xác là:</p>
-                    <p class="my-2 text-center"><code class="text-lg">codeblocks-25.03mingw-setup.exe</code></p>
+                    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
+                        <h4 class="font-bold text-red-600 dark:text-red-400 flex items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Chú ý tuyệt đối:
+                        </h4>
+                        <p class="mt-2 text-sm md:text-base dark:text-gray-300">
+                            Phải tải file có tên: <code class="bg-red-100 dark:bg-red-900/40 px-2 py-1 rounded font-bold">codeblocks-25.03mingw-setup.exe</code>
+                            <br>
+                            <span class="italic text-xs">(Có chữ "mingw" là đúng)</span>
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col items-center justify-center gap-4 my-8">
+                        <a href="https://drive.google.com/file/d/1KBmIJNcZ7iavzet8bN2DU0dGUsmOmKe_/view?usp=drive_link" 
+                           target="_blank" 
+                           class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-green-600 font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600 hover:bg-green-700 hover:shadow-lg hover:-translate-y-1">
+                            <i class="fa-solid fa-download mr-2 group-hover:animate-bounce"></i> 
+                            Tải Code::Blocks 25.03 (Kèm MinGW)
+                        </a>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Link an toàn từ Google Drive / SourceForge</span>
+                    </div>
                 </div>
-
-                <div class="alert-danger p-4 rounded-lg my-6">
-                    <h4 class="font-bold text-lg mb-2">CẢNH BÁO!</h4>
-                    <p>Tuyệt đối <strong>KHÔNG</strong> tải tệp chỉ có tên <code>codeblocks-25.03-setup.exe</code> (bản
-                        không có <code>mingw</code>). Nếu tải tệp này, bạn sẽ không thể biên dịch và chạy code được.</p>
-                </div>
-
-                <!-- Nút tải về trực tiếp -->
-                <div class="text-center my-8">
-                    <a href="https://drive.google.com/file/d/1KBmIJNcZ7iavzet8bN2DU0dGUsmOmKe_/view?usp=drive_link"
-                        target="_blank" rel="noopener noreferrer" class="btn-download">
-                        Nhấn vào đây để tải về
-                        <br>
-                        (Bản 25.03 có Mingw)
-                    </a>
-                    <p class="text-sm text-gray-500 mt-3">Link sẽ mở ra trang SourceForge và tự động tải về sau vài
-                        giây.</p>
-                </div>
-
-                <!-- Hình ảnh minh họa -->
-                <div class="my-6 p-4 border border-gray-200 rounded-lg bg-gray-50 text-center">
-                    <p class="text-sm text-gray-500 mb-2">File bạn tải về sẽ có tên như thế này</p>
-                    <img src="https://placehold.co/600x150/e0e7ff/3730a3?text=codeblocks-25.03mingw-setup.exe"
-                        alt="[Ảnh minh họa file codeblocks-25.03mingw-setup.exe]" class="w-full rounded-md shadow-sm"
-                        onerror="this.src='https://placehold.co/600x150?text=Loi+tai+anh'">
-                </div>
-
             </section>
 
             <!-- Phần 2: Cài đặt -->
-            <section>
-                <h2 class="text-3xl font-bold">Phần 2: Cài đặt chương trình</h2>
-                <p class="mb-4">Sau khi tải xong tệp <code>.exe</code>, bạn hãy mở nó lên để cài đặt. Các bước cài đặt
-                    rất đơn giản:</p>
-                <ol class="list-decimal list-inside space-y-3">
-                    <li><strong>Welcome:</strong> Nhấn <strong>Next</strong> để tiếp tục.</li>
-                    <li><strong>License Agreement (Điều khoản):</strong> Nhấn <strong>I Agree</strong>.</li>
-                    <li><strong>Choose Components (Chọn thành phần):</strong> Cứ để mặc định là "Full". Nhấn
-                        <strong>Next</strong>.
-                    </li>
-                    <li><strong>Install Location (Chọn nơi cài đặt):</strong> Bạn nên để đường dẫn mặc định. Nhấn
-                        <strong>Install</strong>.
-                    </li>
-                    <li>Chờ cho chương trình cài đặt xong.</li>
-                    <li>Một hộp thoại sẽ hiện ra hỏi: "Do you want to run Code::Blocks now?". Bạn có thể nhấn
-                        <strong>Yes</strong> để chạy luôn.
-                    </li>
-                </ol>
+            <section id="install" class="mb-16 scroll-mt-24">
+                <h2 class="text-3xl font-bold mb-6 dark:text-white flex items-center gap-3">
+                    <span class="bg-blue-100 text-blue-600 w-10 h-10 rounded-full flex items-center justify-center text-xl">2</span>
+                    Các bước cài đặt
+                </h2>
+                
+                <div class="space-y-4">
+                    <!-- Step 1 -->
+                    <label class="custom-checkbox flex items-start gap-4 p-4 bg-white dark:bg-darkCard rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 cursor-pointer hover:shadow-md transition-all">
+                        <input type="checkbox" class="hidden">
+                        <div class="w-6 h-6 border-2 border-gray-300 rounded flex items-center justify-center shrink-0 mt-1 transition-colors bg-white dark:bg-gray-700 dark:border-gray-600">
+                            <svg class="w-4 h-4 text-white hidden pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <div>
+                            <strong class="text-lg block mb-1 dark:text-gray-200">Mở file cài đặt</strong>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Chạy file .exe vừa tải. Nhấn <strong>Next</strong> và <strong>I Agree</strong>.</p>
+                        </div>
+                    </label>
+
+                    <!-- Step 2 -->
+                    <label class="custom-checkbox flex items-start gap-4 p-4 bg-white dark:bg-darkCard rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 cursor-pointer hover:shadow-md transition-all">
+                        <input type="checkbox" class="hidden">
+                        <div class="w-6 h-6 border-2 border-gray-300 rounded flex items-center justify-center shrink-0 mt-1 transition-colors bg-white dark:bg-gray-700 dark:border-gray-600">
+                            <svg class="w-4 h-4 text-white hidden pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <div>
+                            <strong class="text-lg block mb-1 dark:text-gray-200">Chọn thành phần (Components)</strong>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Giữ nguyên mặc định là <strong>Full</strong>. Nhấn <strong>Next</strong>.</p>
+                        </div>
+                    </label>
+
+                    <!-- Step 3 -->
+                    <label class="custom-checkbox flex items-start gap-4 p-4 bg-white dark:bg-darkCard rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 cursor-pointer hover:shadow-md transition-all">
+                        <input type="checkbox" class="hidden">
+                        <div class="w-6 h-6 border-2 border-gray-300 rounded flex items-center justify-center shrink-0 mt-1 transition-colors bg-white dark:bg-gray-700 dark:border-gray-600">
+                            <svg class="w-4 h-4 text-white hidden pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <div>
+                            <strong class="text-lg block mb-1 dark:text-gray-200">Hoàn tất</strong>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Nhấn <strong>Install</strong> và chờ đợi. Khi hỏi "Run Code::Blocks now?", chọn <strong>Yes</strong>.</p>
+                        </div>
+                    </label>
+                </div>
             </section>
 
             <!-- Phần 3: Thiết lập -->
-            <section>
-                <h2 class="text-3xl font-bold">Phần 3: Thiết lập trình biên dịch (Lần chạy đầu tiên)</h2>
-                <p class="mb-4">Khi bạn chạy Code::Blocks lần đầu tiên, nó sẽ tự động tìm trình biên dịch.</p>
-                <ol class="list-decimal list-inside space-y-3">
-                    <li>Một cửa sổ "Compiler auto-detection" (Tự động phát hiện trình biên dịch) sẽ hiện lên.</li>
-                    <li>Nó sẽ tìm thấy <strong>"GNU GCC Compiler"</strong> và hiển thị trong danh sách.</li>
-                    <li>Bạn chỉ cần nhấn vào dòng đó, sau đó nhấn nút <strong>"Set as default"</strong> (Đặt làm mặc
-                        định).</li>
-                    <li>Nhấn <strong>OK</strong>.</li>
-                </ol>
-                <div class="my-6 p-4 border border-gray-200 rounded-lg bg-gray-50 text-center">
-                    <p class="text-sm text-gray-500 mb-2">Hình minh họa chọn trình biên dịch</p>
-                    <img src="https://th.bing.com/th/id/R.29c8cee004a8ebc0717e14234ecf3e07?rik=8R1E%2bHnycRwItg&riu=http%3a%2f%2flinguagemc.com.br%2fwp-content%2fuploads%2f2012%2f03%2fcodeblocks-figura6.jpg&ehk=BOZCki54eKBIsdQdKJV6m%2b5FoFFSf8NJycIlmViZmI8%3d&risl=&pid=ImgRaw&r=0"
-                        alt="[Ảnh chụp màn hình hộp thoại chọn trình biên dịch Code::Blocks]"
-                        class="w-full rounded-md shadow-sm"
-                        onerror="this.src='https://placehold.co/600x200?text=Loi+tai+anh'">
+            <section id="setup" class="mb-16 scroll-mt-24">
+                <h2 class="text-3xl font-bold mb-6 dark:text-white flex items-center gap-3">
+                    <span class="bg-indigo-100 text-indigo-600 w-10 h-10 rounded-full flex items-center justify-center text-xl">3</span>
+                    Kích hoạt Compiler
+                </h2>
+                <div class="bg-white dark:bg-darkCard p-6 rounded-xl shadow-md">
+                    <p class="mb-4 dark:text-gray-300">Trong lần khởi động đầu tiên, bảng <strong>Compiler auto-detection</strong> sẽ hiện ra.</p>
+                    <div class="flex flex-col md:flex-row gap-6 items-center">
+                        <div class="flex-1 space-y-2 text-gray-700 dark:text-gray-300">
+                            <p>1. Tìm dòng: <strong>GNU GCC Compiler</strong>.</p>
+                            <p>2. Nhấn vào nó.</p>
+                            <p>3. Nhấn nút <strong>Set as default</strong> bên phải.</p>
+                            <p>4. Nhấn <strong>OK</strong>.</p>
+                        </div>
+                        <div class="flex-1">
+                            <img src="https://th.bing.com/th/id/R.29c8cee004a8ebc0717e14234ecf3e07?rik=8R1E%2bHnycRwItg&riu=http%3a%2f%2flinguagemc.com.br%2fwp-content%2fuploads%2f2012%2f03%2fcodeblocks-figura6.jpg&ehk=BOZCki54eKBIsdQdKJV6m%2b5FoFFSf8NJycIlmViZmI8%3d&risl=&pid=ImgRaw&r=0" 
+                                 alt="Setting Default Compiler" 
+                                 class="rounded-lg shadow-md border border-gray-200 dark:border-gray-600 hover:scale-105 transition-transform duration-300">
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <!-- Phần 4: Chạy thử -->
-            <section>
-                <h2 class="text-3xl font-bold">Phần 4: Tạo và Chạy chương trình "Hello World"</h2>
-                <p class="mb-4">Bây giờ chúng ta sẽ kiểm tra xem mọi thứ đã hoạt động đúng chưa.</p>
-                <ol class="list-decimal list-inside space-y-3">
-                    <li>Vào menu <strong>File</strong> &rarr; <strong>New</strong> &rarr; <strong>Project...</strong>
-                    </li>
-                    <li>Chọn <strong>"Console application"</strong> và nhấn <strong>Go</strong>.</li>
-                    <li>Nhấn <strong>Next</strong>, sau đó chọn ngôn ngữ là <strong>C++</strong>.</li>
-                    <li><strong>Project title:</strong> Gõ vào tên dự án, ví dụ: <code>HelloWorld</code>.</li>
-                    <li><strong>Folder to create project in:</strong> Chọn một thư mục dễ nhớ để lưu code.</li>
-                    <li>Nhấn <strong>Next</strong>, sau đó nhấn <strong>Finish</strong>.</li>
-                </ol>
-
-                <p class="my-4">Dự án của bạn đã được tạo. Ở cửa sổ bên trái, bạn hãy mở rộng <strong>Sources</strong>
-                    và nháy đúp chuột vào tệp <strong><code>main.cpp</code></strong>.</p>
-
-                <p>Màn hình soạn thảo sẽ hiện ra đoạn code C++ mẫu:</p>
-                <!-- Code mẫu -->
-                <pre class="rounded-lg my-4 overflow-x-auto"><code class="language-cpp">#include &lt;iostream&gt;
+            <!-- Phần 4: Code mẫu -->
+            <section id="hello-world" class="mb-16 scroll-mt-24">
+                <h2 class="text-3xl font-bold mb-6 dark:text-white flex items-center gap-3">
+                    <span class="bg-purple-100 text-purple-600 w-10 h-10 rounded-full flex items-center justify-center text-xl">4</span>
+                    Viết Code đầu tiên
+                </h2>
+                
+                <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-t-lg border-b border-gray-300 dark:border-gray-600 flex justify-between items-center">
+                    <span class="font-mono text-sm text-gray-600 dark:text-gray-400">main.cpp</span>
+                    <button onclick="copyToClipboard()" id="copyBtn" class="text-xs bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-500 px-3 py-1 rounded flex items-center gap-2 transition-all">
+                        <i class="fa-regular fa-copy"></i> Copy Code
+                    </button>
+                </div>
+                <div class="relative group">
+                    <pre class="bg-[#282c34] text-[#abb2bf] p-6 rounded-b-lg overflow-x-auto text-sm md:text-base font-mono leading-relaxed"><code id="codeBlock">#include &lt;iostream&gt;
 
 using namespace std;
 
-int main()
-{
+int main() {
     cout << "Hello world!" << endl;
     return 0;
-}
-</code></pre>
-            </section>
-
-            <!-- Phần 5: Chạy chương trình -->
-            <section>
-                <h2 class="text-3xl font-bold">Phần 5: Chạy chương trình</h2>
-                <p class="mb-4">Trên thanh công cụ, bạn hãy tìm nút <strong>Build and Run</strong> (có hình bánh răng
-                    cưa và mũi tên tam giác màu xanh, phím tắt là <strong>F9</strong>).</p>
-
-                <div class="my-6 p-4 border border-gray-200 rounded-lg bg-gray-50 text-center">
-                    <p class="text-sm text-gray-500 mb-2">Nút "Build and Run" quan trọng</p>
-                    <img src="https://codeforwin.org/wp-content/uploads/2017/08/7-build-and-run-your-c-program.png"
-                        alt="[Ảnh của nút Build and Run trên thanh công cụ Code::Blocks]"
-                        class="w-full rounded-md shadow-sm"
-                        onerror="this.src='https://placehold.co/600x150?text=Loi+tai+anh'">
+}</code></pre>
                 </div>
-
-                <p>Nhấn vào nút đó. Nếu mọi thứ chính xác, một cửa sổ console (màu đen) sẽ hiện lên và in ra dòng chữ:
-                </p>
-                <pre class="rounded-lg my-4"><code class="language-text">Hello world!</code></pre>
-
-                <div class="mt-8 p-6 bg-green-50 text-green-800 border-l-4 border-green-500 rounded-lg">
-                    <h3 class="text-2xl font-bold">🎉 Chúc mừng!</h3>
-                    <p class="mt-2 text-lg">Bạn đã cài đặt thành công Code::Blocks và sẵn sàng để học C++!</p>
+                
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                        <h5 class="font-bold text-blue-700 dark:text-blue-400 mb-2">Cách tạo dự án:</h5>
+                        <ul class="text-sm space-y-1 text-gray-700 dark:text-gray-300 list-disc list-inside">
+                            <li>File -> New -> Project</li>
+                            <li>Chọn <strong>Console Application</strong></li>
+                            <li>Chọn <strong>C++</strong></li>
+                            <li>Đặt tên (VD: HelloWorld)</li>
+                        </ul>
+                    </div>
                 </div>
             </section>
 
-            <!-- Phần 6: Lỗi thường gặp -->
-            <section>
-                <h2 class="section-title">Nếu gặp lỗi?</h2>
-                <div class="alert-danger p-4 rounded-lg my-6">
-                    <h4 class="font-bold text-lg mb-2">Lỗi "can't find compiler executable"?</h4>
-                    <p>Rất có thể bạn đã không tải đúng file, hoặc đã nhấn <strong>Cancel</strong> ở bước <strong>Phần
-                            3</strong>. Hãy gỡ cài đặt Code::Blocks và làm lại, đảm bảo bạn tải đúng tệp
-                        <strong><code>mingw</code></strong> và chọn "GNU GCC Compiler" làm mặc định.
+            <!-- Phần 5: Chạy -->
+            <section id="run" class="mb-16 scroll-mt-24">
+                <h2 class="text-3xl font-bold mb-6 dark:text-white flex items-center gap-3">
+                    <span class="bg-orange-100 text-orange-600 w-10 h-10 rounded-full flex items-center justify-center text-xl">5</span>
+                    Chạy chương trình
+                </h2>
+                <div class="flex flex-col items-center p-8 bg-white dark:bg-darkCard rounded-xl shadow text-center">
+                    <p class="text-lg mb-4 dark:text-gray-200">Nhấn phím tắt thần thánh:</p>
+                    <div class="text-5xl font-black text-gray-800 dark:text-white border-4 border-gray-800 dark:border-white rounded-xl px-6 py-3 mb-4 inline-block shadow-lg">
+                        F9
+                    </div>
+                    <p class="text-gray-500 dark:text-gray-400">(Hoặc tìm nút Build and Run hình bánh răng + tam giác xanh)</p>
+                    
+                    <div class="mt-8 w-full max-w-md bg-black text-white font-mono p-4 rounded shadow-2xl text-left border-t-4 border-gray-500">
+                        <div class="flex gap-2 mb-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <p>> Hello world!</p>
+                        <p class="text-green-400 text-xs mt-2">Process returned 0 (0x0)   execution time : 0.051 s</p>
+                        <p class="text-gray-400 text-xs animate-pulse">Press any key to continue.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Troubleshooting -->
+            <section id="troubleshoot" class="mb-10 scroll-mt-24">
+                <div class="bg-red-50 dark:bg-red-900/10 border-l-4 border-red-500 p-6 rounded-r-xl">
+                    <h3 class="text-xl font-bold text-red-700 dark:text-red-400 mb-2">Gặp lỗi "Can't find compiler executable"?</h3>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        Lỗi này 99% là do bạn tải bản không có MinGW. <br>
+                        <strong>Giải pháp:</strong> Gỡ cài đặt Code::Blocks hiện tại, quay lại <a href="#download" class="text-red-600 dark:text-red-400 underline font-bold">Bước 1</a> và tải đúng file được chỉ định.
                     </p>
                 </div>
             </section>
 
         </main>
-
-        <footer class="text-center mt-8 text-gray-500 text-sm">
-            <p>Trang web được tạo để hướng dẫn cài đặt môi trường cho ngôn ngữ C++.</p>
-        </footer>
-
     </div>
 
-</body>
+    <footer class="bg-white dark:bg-darkCard border-t border-gray-200 dark:border-gray-700 mt-12 py-8">
+        <div class="container mx-auto text-center text-gray-500 dark:text-gray-400">
+            <p>Hướng dẫn nội bộ cho lớp C++</p>
+            <p class="text-sm mt-2">&copy; 2024 Code::Blocks Guide. Design with <i class="fa-solid fa-heart text-red-500"></i> & Tailwind CSS.</p>
+        </div>
+    </footer>
 
+    <!-- Liên kết đến file Javascript riêng -->
+    <script src="./js/main.js"></script>
+</body>
 </html>
